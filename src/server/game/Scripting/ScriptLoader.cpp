@@ -137,9 +137,12 @@ void AddSC_boss_flamegor();
 void AddSC_boss_chromaggus();
 void AddSC_boss_nefarian();
 void AddSC_boss_victor_nefarius();
+
 void AddSC_boss_mr_smite();
+void AddSC_boss_glubtok();
 void AddSC_deadmines();                      //Deadmines
 void AddSC_instance_deadmines();
+
 void AddSC_gnomeregan();                     //Gnomeregan
 void AddSC_instance_gnomeregan();
 void AddSC_boss_attumen();                   //Karazhan
@@ -657,6 +660,9 @@ void AddSC_WanderingIsland_East();
 void AddSC_WanderingIsland_West();
 void AddSC_WanderingIsland_South();
 
+//MaelStrom
+void AddSC_kezan();
+
 // battlegrounds
 
 // outdoor pvp
@@ -951,6 +957,9 @@ void AddEasternKingdomsScripts()
     AddSC_western_plaguelands();
     AddSC_westfall();
     AddSC_wetlands();
+	
+	//MaelStrom
+	AddSC_kezan();
 #endif
 }
 

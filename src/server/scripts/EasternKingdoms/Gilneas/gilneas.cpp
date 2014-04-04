@@ -2231,15 +2231,17 @@ public:
         {
             player->SendMovieStart(21);
             player->CastSpell(player, 93477, true);
-            player->RemoveAurasDueToSpell(72870);
-            player->CastSpell(player, 76642, true);
-            player->CastSpell(player, 68630, true);
-            player->CastSpell(player, 72788, true);
+            player->learnSpell(68996, false);
+	     player->learnSpell(94098, false);
             player->CastSpell(player, 68996, true);
+            player->RemoveAurasDueToSpell(72870);
 
-            player->CastSpell(player, 69123, true);
-            player->CastSpell(player, 68632, true);
-            player->CastSpell(player, 68634, true);
+            //player->CastSpell(player, 68630, true);
+            //player->CastSpell(player, 72788, true);
+
+            //player->CastSpell(player, 69123, true);
+            //player->CastSpell(player, 68632, true);
+            //player->CastSpell(player, 68634, true);
 
             WorldLocation loc;
             loc.m_mapId       = 654;
@@ -2249,7 +2251,8 @@ public:
             loc.m_orientation = 3.14f;
 
             player->SetHomebind(loc, 4786);
-        }
+
+       }
         return true;
     }
 };
@@ -2832,22 +2835,24 @@ public:
 
         void SpellHit(Unit* caster, const SpellInfo* spell)
         {
-            Creature* horse = me->FindNearestCreature(NPC_CROWLEY_HORSE, 100, true);
-            if (spell->Id == SPELL_THROW_TORCH)
+            if(Creature* horse = me->FindNearestCreature(NPC_CROWLEY_HORSE, 100, true))
             {
-                Burning = true;
-
-                if(me->getVictim()->GetTypeId() == TYPEID_PLAYER)//We should ONLY switch our victim if we currently have the player targeted
+                if (spell->Id == SPELL_THROW_TORCH)
                 {
-                    me->getThreatManager().resetAllAggro();//We need to aggro on crowley's horse, not the player
-                    horse->AddThreat(me, 1.0f);
-                    me->AddThreat(horse, 1.0f);
-                    me->AI()->AttackStart(horse);
-                }
+                    Burning = true;
 
-                if (caster->GetTypeId() == TYPEID_PLAYER && caster->ToPlayer()->GetQuestStatus(QUEST_SACRIFICES) == QUEST_STATUS_INCOMPLETE)
-                {
-                    caster->ToPlayer()->KilledMonsterCredit(NPC_BLOODFANG_STALKER_CREDIT, 0);
+                    if(me->getVictim()->GetTypeId() == TYPEID_PLAYER)//We should ONLY switch our victim if we currently have the player targeted
+                    {
+                        me->getThreatManager().resetAllAggro();//We need to aggro on crowley's horse, not the player
+                        horse->AddThreat(me, 1.0f);
+                        me->AddThreat(horse, 1.0f);
+                        me->AI()->AttackStart(horse);
+                    }
+
+                    if (caster->GetTypeId() == TYPEID_PLAYER && caster->ToPlayer()->GetQuestStatus(QUEST_SACRIFICES) == QUEST_STATUS_INCOMPLETE)
+                    {
+                        caster->ToPlayer()->KilledMonsterCredit(NPC_BLOODFANG_STALKER_CREDIT, 0);
+                    }
                 }
             }
         }
@@ -2917,8 +2922,45 @@ public:
     };
 };
 
+class npc_lord_darius_crowley : public CreatureScript
+{
+public:
+    npc_lord_darius_crowley() : CreatureScript("npc_lord_darius_crowley") {}
+
+    bool OnQuestAccept(Player* player, Creature* creature, Quest const* quest)
+    {
+        if (quest->GetQuestId() == 14212)
+        {
+	     player->TeleportTo(638, -1535.24, 1584.37, 26.53, 0.78, 0); //teleport to zone
+        }
+        return true;
+    }
+};
+
+class npc_king_g_final : public CreatureScript
+{
+public:
+    npc_king_g_final() : CreatureScript("npc_king_g_final") {}
+
+    bool OnQuestAccept(Player* player, Creature* creature, Quest const* quest)
+    {
+        if (quest->GetQuestId() == 14375)
+        {
+	     player->RemoveAllAuras();
+	     player->CastSpell(player, 93477, true);
+            player->learnSpell(68996, false);
+	     player->learnSpell(94098, false);
+            player->CastSpell(player, 68996, true);
+            player->RemoveAurasDueToSpell(72870);
+        }
+        return true;
+    }
+};
+
 void AddSC_gilneas()
 {
+    new npc_king_g_final();
+    new npc_lord_darius_crowley();
     new npc_gilneas_city_guard_phase1();
     new npc_prince_liam_greymane_phase1();
     new npc_gilneas_city_guard_phase2();

@@ -341,7 +341,7 @@ enum Opcodes
     CMSG_MESSAGECHAT_AFK                              = 0x384,  // 5.0.5 16048
     CMSG_MESSAGECHAT_BATTLEGROUND                     = 0x4CD,  // 5.0.5 16048
     CMSG_MESSAGECHAT_CHANNEL                          = 0x79A,  // 5.0.5 16048
-    CMSG_MESSAGECHAT_DND                              = 0x1EA,  // 5.0.5 16048
+    CMSG_MESSAGECHAT_DND                              = 0x1E4,  // 5.0.5 16048
     CMSG_MESSAGECHAT_EMOTE                            = 0x285,  // 5.0.5 16048
     CMSG_MESSAGECHAT_GUILD                            = 0x0E4,  // 5.0.5 16048
     CMSG_MESSAGECHAT_OFFICER                          = 0x1C1,  // 5.0.5 16048
@@ -1337,7 +1337,7 @@ enum Opcodes
     SMSG_UPDATE_ITEM_ENCHANTMENTS                     = 0x98E,  // 5.0.5 16048
     SMSG_UPDATE_LAST_INSTANCE                         = 0xDDC,  // 5.0.5 16048
     SMSG_UPDATE_OBJECT                                = 0x8F7,  // 5.0.5 16048
-    SMSG_UPDATE_SERVER_PLAYER_POSITION                = 0,      // 0x74A3  in 4.3.4 @todo find me 
+    SMSG_UPDATE_SERVER_PLAYER_POSITION                = 0xE1B,  // 0x74A3  in 4.3.4 @todo find me 
     SMSG_UPDATE_TALENT_DATA                           = 0xCEC,  // 5.0.5 16048
     SMSG_UPDATE_WORLD_STATE                           = 0x847,	// 5.0.5 16048
     SMSG_USERLIST_ADD                                 = 0x95A,  // 5.0.5 16048

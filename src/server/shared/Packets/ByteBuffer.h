@@ -372,6 +372,7 @@ class ByteBuffer
 
         ByteBuffer &operator<<(const std::string &value)
         {
+            size_t len = 0;
             if (size_t len = value.length())
                 append((uint8 const*)value.c_str(), len);
             append((uint8)0);

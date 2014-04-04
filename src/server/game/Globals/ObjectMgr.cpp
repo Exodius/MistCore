@@ -4317,9 +4317,9 @@ void ObjectMgr::LoadQuestLocales()
     {
         Field* fields = result->Fetch();
 
-        uint32 entry = fields[0].GetUInt32();
+        uint32 Id = fields[0].GetUInt32();
 
-        QuestLocale& data = _questLocaleStore[entry];
+        QuestLocale& data = _questLocaleStore[Id];
 
         for (uint8 i = 1; i < TOTAL_LOCALES; ++i)
         {

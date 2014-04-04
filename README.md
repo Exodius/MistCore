@@ -7,28 +7,18 @@ There is still a lot to be fixed in this source, and we need all the help we can
 
 If you feel interested by this project and you would like to help, we would appriciate it.
 You can report bugs or add fixed or new systems in the 'Issues' list or the 'Pull Requests' list.
+
 ## IRC
 Feel free to join us at irc.rizon.net - #mist
 
+#Reminder
+MistCore is an educational project and it's opensource with GNU GPL v2.
+
 ## Database
-For the moment we do not have a decent database. For the moment we will stick with the leaked worldpanda database that was leaked with JadeCore.
-In time we will add, remove and translate the database into a good working database.
-
-https://www.dropbox.com/s/9beutzesui17xt7/Database.rar
-
-Notes:
-
-Auth: Use sql\base\auth_database.sql
-
-Characters: Use sql\base\characters_database.sql
-
-World: Use the worldpanda.sql found in the link above.
+https://github.com/MistCore/MC-Database
 
 ## Dbc, maps, & vmaps
-You can use these extractors to generate dbc, maps & vmaps.
-
-https://github.com/MistCore/MistCore/releases/tag/Extractors
-
+You can use extractors to generate dbc, maps & vmaps.
 
 ## Requirements
 
