@@ -348,10 +348,10 @@ void WorldSession::HandleWhoOpcode(WorldPacket& recvData)
         // through config, but is unstable
         if ((matchcount++) >= sWorld->getIntConfig(CONFIG_MAX_WHO))
         {
-        	if (sWorld->getBoolConfig(CONFIG_LIMIT_WHO_ONLINE))
-        		break;
-        	else
-        		continue;
+            if (sWorld->getBoolConfig(CONFIG_LIMIT_WHO_ONLINE))
+                break;
+            else
+                continue;
 
             break;
         }
@@ -370,7 +370,7 @@ void WorldSession::HandleWhoOpcode(WorldPacket& recvData)
     uint32 count = m.size();
     data.put(0, displaycount);                              // insert right count, count displayed
     if (count > sWorld->getIntConfig(CONFIG_MAX_WHO))
-    	 count = ceil(sWorld->getRate(RATE_ONLINE)*m.size());
+         count = ceil(sWorld->getRate(RATE_ONLINE)*m.size());
     data.put( 4, count > sWorld->getIntConfig(CONFIG_MAX_WHO) ? count : displaycount );        // insert right count, online count
 
     SendPacket(&data);
@@ -1247,6 +1247,12 @@ void WorldSession::HandleInspectOpcode(WorldPacket& recvData)
         return;
     }
 
+    if (!GetPlayer()->IsWithinDistInMap(player, INSPECT_DISTANCE, false))
+        return;
+
+    if (GetPlayer()->IsValidAttackTarget(player))
+        return;
+
     uint32 talent_points = 41;
     WorldPacket data(SMSG_INSPECT_TALENT, 8 + 4 + 1 + 1 + talent_points + 8 + 4 + 8 + 4);
     data << uint32(player->GetSpecializationId(player->GetActiveSpec()));
@@ -1422,6 +1428,12 @@ void WorldSession::HandleInspectHonorStatsOpcode(WorldPacket& recvData)
         //sLog->outDebug(LOG_FILTER_NETWORKIO, "CMSG_INSPECT_HONOR_STATS: No player found from GUID: " UI64FMTD, guid);
         return;
     }
+
+    if (!GetPlayer()->IsWithinDistInMap(player, INSPECT_DISTANCE, false))
+        return;
+
+    if (GetPlayer()->IsValidAttackTarget(player))
+        return;
 
     ObjectGuid playerGuid = player->GetGUID();
     WorldPacket data(SMSG_INSPECT_HONOR_STATS, 8+1+4+4);
@@ -1628,7 +1640,7 @@ void WorldSession::HandleRealmQueryNameOpcode(WorldPacket& recvData)
 
     uint32 realmId = recvData.read<uint32>();
 
-    if(realmId != realmID)
+    if (realmId != realmID)
         return; // Cheater ?
 
     WorldPacket data(SMSG_REALM_QUERY_RESPONSE);
@@ -1884,6 +1896,12 @@ void WorldSession::HandleQueryInspectAchievements(WorldPacket& recvData)
     if (!player)
         return;
 
+    if (!GetPlayer()->IsWithinDistInMap(player, INSPECT_DISTANCE, false))
+        return;
+
+    if (GetPlayer()->IsValidAttackTarget(player))
+        return;
+
     player->GetAchievementMgr().SendAchievementInfo(_player);
 }
 
@@ -2001,7 +2019,7 @@ void WorldSession::HandleHearthAndResurrect(WorldPacket& /*recvData*/)
     if (_player->isInFlight())
         return;
 
-    if(/*Battlefield* bf =*/ sBattlefieldMgr->GetBattlefieldToZoneId(_player->GetZoneId()))
+    if (/*Battlefield* bf =*/ sBattlefieldMgr->GetBattlefieldToZoneId(_player->GetZoneId()))
     {
         // bf->PlayerAskToLeave(_player); FIXME
         return;
@@ -2150,7 +2168,7 @@ void WorldSession::HandleObjectUpdateFailedOpcode(WorldPacket& recvPacket)
     recvPacket.ReadBytesSeq(guid, byteOrder);
 
     WorldObject* obj = ObjectAccessor::GetWorldObject(*GetPlayer(), guid);
-    if(obj)
+    if (obj)
         obj->SendUpdateToPlayer(GetPlayer());
 
     sLog->outError(LOG_FILTER_NETWORKIO, "Object update failed for object " UI64FMTD " (%s) for player %s (%u)", uint64(guid), obj ? obj->GetName() : "object-not-found", GetPlayerName().c_str(), GetGuidLow());

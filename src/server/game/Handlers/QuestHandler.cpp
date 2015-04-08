@@ -120,18 +120,36 @@ void WorldSession::HandleQuestgiverAcceptQuestOpcode(WorldPacket& recvData)
 
     Object* object = ObjectAccessor::GetObjectByTypeMask(*_player, guid, TYPEMASK_UNIT|TYPEMASK_GAMEOBJECT|TYPEMASK_ITEM|TYPEMASK_PLAYER);
 
+    #define CLOSE_GOSSIP_CLEAR_DIVIDER() \
+    do { \
+        _player->PlayerTalkClass->SendCloseGossip(); \
+        _player->SetDivider(0); \
+    } while (0)
+
     // no or incorrect quest giver
-    if (!object || (object->GetTypeId() != TYPEID_PLAYER && !object->hasQuest(questId)) ||
-        (object->GetTypeId() == TYPEID_PLAYER && object != _player && !object->ToPlayer()->CanShareQuest(questId)))
+    if (!object)
     {
-        _player->PlayerTalkClass->SendCloseGossip();
-        _player->SaveToDB();
-        _player->SetDivider(0);
+        CLOSE_GOSSIP_CLEAR_DIVIDER();
         return;
     }
 
-    if (object && object->GetTypeId() == TYPEID_PLAYER && !object->hasQuest(questId))
-        return;
+    if (Player* playerQuestObject = object->ToPlayer())
+    {
+        if ((_player->GetDivider() && _player->GetDivider() != guid) ||
+           ((object != _player && !playerQuestObject->CanShareQuest(questId))))
+        {
+            CLOSE_GOSSIP_CLEAR_DIVIDER();
+            return;
+        }
+    }
+    else
+    {
+        if (!object->hasQuest(questId))
+        {
+            CLOSE_GOSSIP_CLEAR_DIVIDER();
+            return;
+        }
+    }    
 
     // some kind of WPE protection
     if (!_player->CanInteractWithQuestGiver(object))
@@ -231,7 +249,7 @@ void WorldSession::HandleQuestgiverAcceptQuestOpcode(WorldPacket& recvData)
             if (quest->GetSrcSpell() > 0)
                 _player->CastSpell(_player, quest->GetSrcSpell(), true);
 
-            if(quest->IsAutoComplete())
+            if (quest->IsAutoComplete())
             {
                 // Add quest items for quests that require items
                 for (uint8 x = 0; x < QUEST_ITEM_OBJECTIVES_COUNT; ++x)
@@ -261,7 +279,7 @@ void WorldSession::HandleQuestgiverAcceptQuestOpcode(WorldPacket& recvData)
                     if (uint32 spell_id = quest->RequiredSpellCast[i])
                     {
                         for (uint16 z = 0; z < creaturecount; ++z)
-                            if(creature > 0)
+                            if (creature > 0)
                                 _player->CastedCreatureOrGOForQuest(creature, true, spell_id);
                             else
                                 _player->CastedCreatureOrGOForQuest(creature, false, spell_id);
@@ -285,7 +303,7 @@ void WorldSession::HandleQuestgiverAcceptQuestOpcode(WorldPacket& recvData)
                     uint32 currency = quest->RequiredCurrencyId[y];
                     uint32 currencyCount = quest->RequiredCurrencyCount[y];
 
-                    if(!currency || !currencyCount)
+                    if (!currency || !currencyCount)
                         continue;
 
                     _player->ModifyCurrency(currency, currencyCount);
@@ -666,7 +684,8 @@ void WorldSession::HandleQuestgiverQuestAutoLaunch(WorldPacket& /*recvPacket*/)
 
 void WorldSession::HandlePushQuestToParty(WorldPacket& recvPacket)
 {
-    uint32 questId;
+    uint32 questId;	
+
     recvPacket >> questId;
 
     sLog->outDebug(LOG_FILTER_NETWORKIO, "WORLD: Received CMSG_PUSHQUESTTOPARTY questId = %u", questId);
@@ -726,9 +745,10 @@ void WorldSession::HandlePushQuestToParty(WorldPacket& recvPacket)
 
 void WorldSession::HandleQuestPushResult(WorldPacket& recvPacket)
 {
-    uint64 guid;
+	uint64 Unk;
+    uint32 guid;
     uint8 msg;
-    recvPacket >> guid >> msg;
+    recvPacket >> Unk >> guid >> msg;
 
     sLog->outDebug(LOG_FILTER_NETWORKIO, "WORLD: Received MSG_QUEST_PUSH_RESULT");
 
@@ -736,9 +756,9 @@ void WorldSession::HandleQuestPushResult(WorldPacket& recvPacket)
     {
         Player* player = ObjectAccessor::FindPlayer(_player->GetDivider());
         if (player)
-        {
+        {			
             WorldPacket data(MSG_QUEST_PUSH_RESULT, (8+1));
-            data << uint64(guid);
+            data << uint32(guid);
             data << uint8(msg);                             // valid values: 0-8
             player->GetSession()->SendPacket(&data);
             _player->SetDivider(0);

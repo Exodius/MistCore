@@ -268,7 +268,6 @@ class boss_spirit_kings_controler : public CreatureScript
                     flankingGuid[i] = 0;
 
                 spawnSpiritKings();
-                me->SetReactState(REACT_PASSIVE);
 
                 events.ScheduleEvent(EVENT_CHECK_WIPE, 2500);
                 pInstance->DoRemoveAurasDueToSpellOnPlayers(SPELL_MADDENING_SHOUT);
@@ -434,6 +433,7 @@ class boss_spirit_kings_controler : public CreatureScript
                                 default:
                                     break;
                             }
+                            
                         }
 
                         break;
@@ -871,6 +871,7 @@ class boss_spirit_kings : public CreatureScript
                             {
                                 if (Unit* target = SelectTarget(SELECT_TARGET_RANDOM, 2))
                                 {
+                                    if (!target->isPet())
                                     me->CastSpell(target, SPELL_UNDYING_SHADOWS, false);
                                     Talk(ZIAN_SPELL);
                                 }

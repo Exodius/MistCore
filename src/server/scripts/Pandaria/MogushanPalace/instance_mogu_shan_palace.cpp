@@ -189,7 +189,7 @@ public:
                 for (Map::PlayerList::const_iterator i = PlayerList.begin(); i != PlayerList.end(); ++i)
                 {
                     if(Player* plr = i->getSource())
-                        if (plr->isAlive() && !plr->isGameMaster())
+                        if (plr->isAlive() && !plr->IsGameMaster())
                             return false;
                 }
             }
@@ -532,20 +532,20 @@ public:
                             creature->DisappearAndDie();
                     }
 
-					if (Creature* haiyan = instance->GetCreature(haiyan_guid))
-						haiyan->DisappearAndDie();
+                    if (Creature* haiyan = instance->GetCreature(haiyan_guid))
+                        haiyan->DisappearAndDie();
 
-					  if (Creature* ming = instance->GetCreature(ming_guid))
-						  ming->DisappearAndDie();
+                      if (Creature* ming = instance->GetCreature(ming_guid))
+                          ming->DisappearAndDie();
 
-					  if (Creature* kuai = instance->GetCreature(kuai_guid))
-						  kuai->DisappearAndDie();
+                      if (Creature* kuai = instance->GetCreature(kuai_guid))
+                          kuai->DisappearAndDie();
 
-					  if (Creature* xin = instance->GetCreature(xin_guid))
-						  xin->DisappearAndDie();
+                      if (Creature* xin = instance->GetCreature(xin_guid))
+                          xin->DisappearAndDie();
 
                     SetBossState(DATA_TRIAL_OF_THE_KING, DONE);
-			//this has to be done this way because setbossstate is not working for this boss
+            //this has to be done this way because setbossstate is not working for this boss
                     if (GameObject* chest = instance->GetGameObject(trialChestGuid))
                         chest->SetPhaseMask(1, true);
 

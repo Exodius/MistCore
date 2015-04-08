@@ -901,7 +901,7 @@ void Group::SendLootStartRoll(uint32 countDown, uint32 mapid, const Roll& r)
     data << uint32(0);                     // randomSuffix
     data.WriteByteSeq(guid[3]);
     data.WriteByteSeq(guid[4]);
-    if(r.itemSlot)
+    if (r.itemSlot)
         data << uint8(r.itemSlot);
     data.WriteByteSeq(guid[6]);
     data << uint32(r.itemRandomPropId);                              // the countdown time to choose "need" or "greed"
@@ -962,7 +962,7 @@ void Group::SendLootStartRollToPlayer(uint32 countDown, uint32 mapId, Player* p,
     data << uint32(0);
     data.WriteByteSeq(guid[3]);
     data.WriteByteSeq(guid[4]);
-    if(r.itemSlot)
+    if (r.itemSlot)
         data << uint8(r.itemSlot);
     data.WriteByteSeq(guid[6]);
     data << uint32(r.itemRandomPropId);
@@ -2051,7 +2051,7 @@ void Group::SendUpdateToPlayer(uint64 playerGUID, MemberSlot* slot)
             continue;
 
         Player* member = ObjectAccessor::FindPlayer(citr->guid);
-        uint8 onlineState = (member) ? MEMBER_STATUS_ONLINE : MEMBER_STATUS_OFFLINE;
+        uint8 onlineState = (member && !member->GetSession()->PlayerLogout()) ? MEMBER_STATUS_ONLINE : MEMBER_STATUS_OFFLINE;
         onlineState = onlineState | ((isBGGroup() || isBFGroup()) ? MEMBER_STATUS_PVP : 0);
         ObjectGuid memguid = citr->guid;
 
@@ -2706,7 +2706,7 @@ void Group::UnbindInstance(uint32 mapid, uint8 difficulty, bool unload)
 
 void Group::_homebindIfInstance(Player* player)
 {
-    if (player && !player->isGameMaster() && sMapStore.LookupEntry(player->GetMapId())->IsDungeon())
+    if (player && !player->IsGameMaster() && sMapStore.LookupEntry(player->GetMapId())->IsDungeon())
         player->m_InstanceValid = false;
 }
 

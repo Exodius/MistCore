@@ -326,21 +326,21 @@ void Object::_BuildMovementUpdate(ByteBuffer* data, uint16 flags) const
     data->WriteBit(flags & UPDATEFLAG_HAS_TARGET);
     data->WriteBit(flags & UPDATEFLAG_VEHICLE);
     data->WriteBits(unkLoopCounter, 24);
-    data->WriteBit(0);								//HasUnknown5
+    data->WriteBit(0);                                //HasUnknown5
     data->WriteBit(flags & UPDATEFLAG_GO_TRANSPORT_POSITION);
     data->WriteBit(flags & UPDATEFLAG_STATIONARY_POSITION);
-    data->WriteBits(bitCounter2, 21);				//BitCounter2
-    data->WriteBit(flags & UPDATEFLAG_TRANSPORT);	//isTransport
-    data->WriteBit(hasAreaTriggerData);				//HasAreaTriggerInfo
-    data->WriteBit(flags & UPDATEFLAG_SELF);		//isSelf						
-    data->WriteBit(flags & UPDATEFLAG_LIVING);		//isAlive
-    data->WriteBit(0);								//Bit1
-    data->WriteBit(0);								//HasUnknown2
-    data->WriteBit(0);								//Bit2
-    data->WriteBit(flags & UPDATEFLAG_ROTATION);	//HasRotation
-    data->WriteBit(flags & UPDATEFLAG_ANIMKITS);	//HasAnimKits
-    data->WriteBit(0);								//Bit3
-    data->WriteBit(0);		                        //HasUnknown4
+    data->WriteBits(bitCounter2, 21);                //BitCounter2
+    data->WriteBit(flags & UPDATEFLAG_TRANSPORT);    //isTransport
+    data->WriteBit(hasAreaTriggerData);                //HasAreaTriggerInfo
+    data->WriteBit(flags & UPDATEFLAG_SELF);        //isSelf                        
+    data->WriteBit(flags & UPDATEFLAG_LIVING);        //isAlive
+    data->WriteBit(0);                                //Bit1
+    data->WriteBit(0);                                //HasUnknown2
+    data->WriteBit(0);                                //Bit2
+    data->WriteBit(flags & UPDATEFLAG_ROTATION);    //HasRotation
+    data->WriteBit(flags & UPDATEFLAG_ANIMKITS);    //HasAnimKits
+    data->WriteBit(0);                                //Bit3
+    data->WriteBit(0);                                //HasUnknown4
 
     // Transport time related
     if (bitCounter2)
@@ -362,8 +362,8 @@ void Object::_BuildMovementUpdate(ByteBuffer* data, uint16 flags) const
         data->WriteBit(transGuid[0]);
         data->WriteBit(transGuid[5]);
         data->WriteBit(transGuid[1]);
-        data->WriteBit(0);				// HasTransportTime2
-        data->WriteBit(0);				// HasTransportTime3
+        data->WriteBit(0);                // HasTransportTime2
+        data->WriteBit(0);                // HasTransportTime3
         data->WriteBit(transGuid[2]);
         data->WriteBit(transGuid[7]);
     }
@@ -418,7 +418,7 @@ void Object::_BuildMovementUpdate(ByteBuffer* data, uint16 flags) const
         data->WriteBit(guid[7]);
         data->WriteBit(!movementFlagsExtra);
         data->WriteBit(guid[0]);
-        data->WriteBit(0);													//IsAlive_unk1
+        data->WriteBit(0);                                                    //IsAlive_unk1
         data->WriteBit(guid[5]);
         if (movementFlagsExtra)
             data->WriteBits(movementFlagsExtra, 13);
@@ -430,8 +430,8 @@ void Object::_BuildMovementUpdate(ByteBuffer* data, uint16 flags) const
         if (movementFlags)
             data->WriteBits(movementFlags, 30);
         data->WriteBit(G3D::fuzzyEq(self->GetOrientation(), 0.0f));          // Has Orientation bit
-        data->WriteBit(0);													//IsAlive_unk4
-        data->WriteBit(0);													//IsAlive_unk3
+        data->WriteBit(0);                                                    //IsAlive_unk4
+        data->WriteBit(0);                                                    //IsAlive_unk3
         if (self->IsSplineEnabled())
             Movement::PacketBuilder::WriteCreateBits(*self->movespline, *data); //TODO: CHANGE THE STRUCT IN WRITECREATEBITS // Useless, spline feature are not implanted in TrinityCore
         data->WriteBit(guid[1]);
@@ -543,9 +543,9 @@ void Object::_BuildMovementUpdate(ByteBuffer* data, uint16 flags) const
             *data << float(self->GetOrientation());
         data->WriteByteSeq(guid[4]);
         *data << self->GetSpeed(MOVE_SWIM);
-        *data << self->GetSpeed(MOVE_SWIM_BACK);
-        *data << self->GetSpeed(MOVE_TURN_RATE);
         *data << self->GetSpeed(MOVE_RUN_BACK);
+        *data << self->GetSpeed(MOVE_TURN_RATE);
+        *data << self->GetSpeed(MOVE_SWIM_BACK);
         data->WriteByteSeq(guid[0]);
     }
 
@@ -633,7 +633,7 @@ void Object::_BuildValuesUpdate(uint8 updatetype, ByteBuffer* data, UpdateMask* 
     {
         if (isType(TYPEMASK_GAMEOBJECT) && !((GameObject*)this)->IsDynTransport())
         {
-            if (((GameObject*)this)->ActivateToQuest(target) || target->isGameMaster())
+            if (((GameObject*)this)->ActivateToQuest(target) || target->IsGameMaster())
                 IsActivateToQuest = true;
 
             if (((GameObject*)this)->GetGoArtKit())
@@ -649,7 +649,7 @@ void Object::_BuildValuesUpdate(uint8 updatetype, ByteBuffer* data, UpdateMask* 
     {
         if (isType(TYPEMASK_GAMEOBJECT) && !((GameObject*)this)->IsTransport())
         {
-            if (((GameObject*)this)->ActivateToQuest(target) || target->isGameMaster())
+            if (((GameObject*)this)->ActivateToQuest(target) || target->IsGameMaster())
                 IsActivateToQuest = true;
 
             updateMask->SetBit(GAMEOBJECT_BYTES_1);
@@ -722,7 +722,7 @@ void Object::_BuildValuesUpdate(uint8 updatetype, ByteBuffer* data, UpdateMask* 
                 // Gamemasters should be always able to select units - remove not selectable flag
                 else if (index == UNIT_FIELD_FLAGS)
                 {
-                    if (target->isGameMaster())
+                    if (target->IsGameMaster())
                         *data << (m_uint32Values[index] & ~UNIT_FLAG_NOT_SELECTABLE);
                     else
                         *data << m_uint32Values[index];
@@ -746,7 +746,7 @@ void Object::_BuildValuesUpdate(uint8 updatetype, ByteBuffer* data, UpdateMask* 
 
                         if (cinfo->flags_extra & CREATURE_FLAG_EXTRA_TRIGGER)
                         {
-                            if (target->isGameMaster())
+                            if (target->IsGameMaster())
                             {
                                 if (cinfo->Modelid1)
                                     *data << cinfo->Modelid1;//Modelid1 is a visible model for gms
@@ -853,19 +853,19 @@ void Object::_BuildValuesUpdate(uint8 updatetype, ByteBuffer* data, UpdateMask* 
                         switch (ToGameObject()->GetGoType())
                         {
                             case GAMEOBJECT_TYPE_CHEST:
-                                if (target->isGameMaster())
+                                if (target->IsGameMaster())
                                     *data << uint16(GO_DYNFLAG_LO_ACTIVATE);
                                 else
                                     *data << uint16(GO_DYNFLAG_LO_ACTIVATE | GO_DYNFLAG_LO_SPARKLE);
                                 break;
                             case GAMEOBJECT_TYPE_GENERIC:
-                                if (target->isGameMaster())
+                                if (target->IsGameMaster())
                                     *data << uint16(0);
                                 else
                                     *data << uint16(GO_DYNFLAG_LO_SPARKLE);
                                 break;
                             case GAMEOBJECT_TYPE_GOOBER:
-                                if (target->isGameMaster())
+                                if (target->IsGameMaster())
                                     *data << uint16(GO_DYNFLAG_LO_ACTIVATE);
                                 else
                                     *data << uint16(GO_DYNFLAG_LO_ACTIVATE | GO_DYNFLAG_LO_SPARKLE);
@@ -932,7 +932,7 @@ void Object::_BuildValuesUpdate(uint8 updatetype, ByteBuffer* data, UpdateMask* 
     {
         for(int index = 0; index < 32; index++)
         {
-            if(m_dynamicChange[i][index])
+            if (m_dynamicChange[i][index])
             {
                 dynamicTabMask |= 1 << i;
                 dynamicFieldsMask[i] |= 1 << index;
@@ -941,20 +941,20 @@ void Object::_BuildValuesUpdate(uint8 updatetype, ByteBuffer* data, UpdateMask* 
     }
 
     *data << uint8(bool(dynamicTabMask));
-    if(dynamicTabMask)
+    if (dynamicTabMask)
     {
         *data << uint32(dynamicTabMask);
 
         for(size_t i = 0; i < m_dynamicTab.size(); i++)
         {
-            if(dynamicTabMask & (1 << i))
+            if (dynamicTabMask & (1 << i))
             {
                 *data << uint8(1);
                 *data << uint32(dynamicFieldsMask[i]);
 
                 for(int index = 0; index < 32; index++)
                 {
-                    if(dynamicFieldsMask[i] & (1 << index))
+                    if (dynamicFieldsMask[i] & (1 << index))
                         *data << uint32(m_dynamicTab[i][index]);
                 }
             }
@@ -2451,16 +2451,22 @@ void WorldObject::BuildMonsterChat(WorldPacket* data, uint8 msgtype, char const*
     *data << (uint32)(strlen(name)+1);
     *data << name;
     *data << (uint64)targetGuid;                            // Unit Target
+
     if (targetGuid && !IS_PLAYER_GUID(targetGuid))
     {
         *data << (uint32)1;                                 // target name length
         *data << (uint8)0;                                  // target name
     }
+
     *data << (uint32)(strlen(text)+1);
     *data << text;
     *data << (uint16)0;                                      // ChatTag
-    *data << (float)0.0f;                                   // added in 4.2.0, unk
-    *data << (uint8)0;                                      // added in 4.2.0, unk
+
+    if (msgtype == CHAT_MSG_RAID_BOSS_EMOTE || msgtype == CHAT_MSG_RAID_BOSS_WHISPER)
+    {
+        *data << (float)0.0f;                                   // added in 4.2.0, unk
+        *data << (uint8)0;                                      // added in 4.2.0, unk
+    }
 }
 
 void Unit::BuildHeartBeatMsg(WorldPacket* data) const

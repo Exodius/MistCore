@@ -65,7 +65,7 @@ struct ServerPktHeader
         header[2] = cmd & 0xFF;
         header[3] = cmd >> 8;
 
-        if(encrypt)
+        if (encrypt)
         {
             uint32 totalLenght = size-2;
             totalLenght <<=12;
@@ -497,7 +497,7 @@ int WorldSocket::handle_input_header (void)
     uint16 cmd = 0;
     uint16 size = 0;
 
-    if(m_Crypt.IsInitialized())
+    if (m_Crypt.IsInitialized())
     {
         ClientCryptPktHeader& header = *((ClientCryptPktHeader*)m_Header.rd_ptr());
         size = (uint16)(header.header >> 12);
@@ -510,7 +510,7 @@ int WorldSocket::handle_input_header (void)
         size = header.size;
     }
 
-    if ((size > 10240) || (cmd > 0xFFFF && (cmd >> 16) != 0x4C52))  // LR (from MSG_VERIFY_CONNECTIVITY)
+    if ((size > 0x4F57) || (cmd  > 0x4F57))
     {
         Player* _player = m_Session ? m_Session->GetPlayer() : NULL;
         sLog->outError(LOG_FILTER_NETWORKIO, "WorldSocket::handle_input_header(): client (account: %u, char [GUID: %u, name: %s]) sent malformed packet (size: %d, cmd: %d)",
@@ -524,7 +524,7 @@ int WorldSocket::handle_input_header (void)
     }
 
 
-    if(!m_Crypt.IsInitialized())
+    if (!m_Crypt.IsInitialized())
         size -= 2;
 
     ACE_NEW_RETURN(m_RecvWPct, WorldPacket (PacketFilter::DropHighBytes(Opcodes(cmd)), size), -1);
@@ -839,7 +839,7 @@ void WorldSocket::SendAuthResponse(uint8 code, bool queued, uint32 queuePos)
     packet.WriteBits(realmRaceCount, 25);                 // Read realmClassResult.count // 15 (race ?)
 
     packet.WriteBit(queued);
-    if(queued)
+    if (queued)
     {
         packet.WriteBit(0);
         packet << uint32(queuePos);
@@ -1203,8 +1203,8 @@ int WorldSocket::HandlePing (WorldPacket& recvPacket)
     uint32 latency;
 
     // Get the ping packet content
-    recvPacket >> latency;
     recvPacket >> ping;
+    recvPacket >> latency;
 
     if (m_LastPingTime == ACE_Time_Value::zero)
         m_LastPingTime = ACE_OS::gettimeofday(); // for 1st ping

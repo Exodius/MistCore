@@ -1597,6 +1597,9 @@ void World::SetInitialWorldSettings()
     sLog->outInfo(LOG_FILTER_SERVER_LOADING, "Loading Dungeon boss data...");
     sObjectMgr->LoadInstanceEncounters();
 
+    sLog->outInfo(LOG_FILTER_SERVER_LOADING, "Loading LFG required item levels...");
+    sLFGMgr->LoadRequiredLevels();
+
     sLog->outInfo(LOG_FILTER_SERVER_LOADING, "Loading LFG rewards...");
     sLFGMgr->LoadRewards();
 
@@ -1932,7 +1935,7 @@ void World::SetInitialWorldSettings()
 
     m_realmName = "Mist of Pandaria servers";
     QueryResult realmResult = LoginDatabase.PQuery("SELECT name FROM realmlist WHERE id = %u", realmID);
-    if(realmResult)
+    if (realmResult)
         m_realmName = (*realmResult)[0].GetString();
 
     sLog->outInfo(LOG_FILTER_GENERAL, "Loading area skip update...");
@@ -2055,7 +2058,7 @@ void World::Update(uint32 diff)
     {
         if (m_updateTimeSum > m_int_configs[CONFIG_INTERVAL_LOG_UPDATE])
         {
-        	LoginDatabase.PExecute("UPDATE realmlist set online=%u where id=%u", GetActiveSessionCount(), realmID);
+            LoginDatabase.PExecute("UPDATE realmlist set online=%u where id=%u", GetActiveSessionCount(), realmID);
             sLog->outDebug(LOG_FILTER_GENERAL, "Update time diff: %u. Players online: %u.", m_updateTimeSum / m_updateTimeCount, GetActiveSessionCount());
             m_updateTimeSum = m_updateTime;
             m_updateTimeCount = 1;
@@ -2527,18 +2530,18 @@ BanReturn World::BanAccount(BanMode mode, std::string nameOrIP, std::string dura
         {
             // Check account already banned
 
-            if(duration != "-1")
+            if (duration != "-1")
             {
                 // temp banned
                 stmtt = LoginDatabase.GetPreparedStatement(LOGIN_SEL_ACCOUNT_ALWAYS_BANNED);
                 stmtt->setUInt32(0, account);
                 PreparedQueryResult resultCheck = LoginDatabase.Query(stmtt);
 
-                if(resultCheck)
+                if (resultCheck)
                 {
                     Field* fieldsCheck = resultCheck->Fetch();
                     uint32 timeRemaining = fieldsCheck[0].GetUInt32();
-                    if(timeRemaining > duration_secs)
+                    if (timeRemaining > duration_secs)
                     {
                          return BAN_TOO_SMALL; 
                     }
@@ -2550,7 +2553,7 @@ BanReturn World::BanAccount(BanMode mode, std::string nameOrIP, std::string dura
                 stmtt->setUInt32(0, account);
                 PreparedQueryResult resultCheckBan = LoginDatabase.Query(stmtt);
 
-                if(resultCheckBan)
+                if (resultCheckBan)
                 {
                     return BAN_ALREADY_PERMANENT;
                 }
@@ -2763,11 +2766,6 @@ void World::ShutdownMsg(bool show, Player* player)
 
     if (m_ShutdownTimer == 5)
         sWorld->KickAll(); // save and kick all players
-    else if (m_ShutdownTimer == 2)
-    {
-        sLog->outError(LOG_FILTER_SERVER_LOADING, "Automatic scheduled server restart!");
-        ASSERT(false);
-    }
 }
 
 /// Cancel a planned server shutdown
@@ -3336,9 +3334,9 @@ CharacterNameData const* World::GetCharacterNameData(uint32 guid) const
 }
 
 void World::UpdatePhaseDefinitions()
-{	
-    SessionMap::const_iterator itr;	
-    for (itr = m_sessions.begin(); itr != m_sessions.end(); ++itr)	
-        if (itr->second && itr->second->GetPlayer() && itr->second->GetPlayer()->IsInWorld())	
-            itr->second->GetPlayer()->GetPhaseMgr().NotifyStoresReloaded();	
+{    
+    SessionMap::const_iterator itr;    
+    for (itr = m_sessions.begin(); itr != m_sessions.end(); ++itr)    
+        if (itr->second && itr->second->GetPlayer() && itr->second->GetPlayer()->IsInWorld())    
+            itr->second->GetPlayer()->GetPhaseMgr().NotifyStoresReloaded();    
 }

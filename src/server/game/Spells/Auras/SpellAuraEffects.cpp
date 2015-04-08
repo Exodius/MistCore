@@ -2311,17 +2311,17 @@ void AuraEffect::HandlePhase(AuraApplication const* aurApp, uint8 mode, bool app
 
     if (Player* player = target->ToPlayer())
     {
-        if (apply)	
-            player->GetPhaseMgr().RegisterPhasingAuraEffect(this);	
-        else	
+        if (apply)    
+            player->GetPhaseMgr().RegisterPhasingAuraEffect(this);    
+        else    
             player->GetPhaseMgr().UnRegisterPhasingAuraEffect(this);
     }
     else
     {
         uint32 newPhase = 0;
-        Unit::AuraEffectList const& phases = target->GetAuraEffectsByType(SPELL_AURA_PHASE);	
-        if (!phases.empty())	
-            for (Unit::AuraEffectList::const_iterator itr = phases.begin(); itr != phases.end(); ++itr)	
+        Unit::AuraEffectList const& phases = target->GetAuraEffectsByType(SPELL_AURA_PHASE);    
+        if (!phases.empty())    
+            for (Unit::AuraEffectList::const_iterator itr = phases.begin(); itr != phases.end(); ++itr)    
                 newPhase |= (*itr)->GetMiscValue();
 
         if (!newPhase)
@@ -5618,8 +5618,8 @@ void AuraEffect::HandleAuraDummy(AuraApplication const* aurApp, uint8 mode, bool
                     if (GetId() == 61777)
                         target->CastSpell(target, GetAmount(), true);
                     break;
-				case SPELLFAMILY_ROGUE:
-					//  Tricks of the trade
+                case SPELLFAMILY_ROGUE:
+                    //  Tricks of the trade
                     switch (GetId())
                     {
                         case 59628: //Tricks of the trade buff on rogue (6sec duration)
@@ -5633,10 +5633,10 @@ void AuraEffect::HandleAuraDummy(AuraApplication const* aurApp, uint8 mode, bool
                             break;
                     }
                     break;
-				default:
-					break;
-			}
-		}
+                default:
+                    break;
+            }
+        }
     }
 
     // AT APPLY & REMOVE
@@ -5959,18 +5959,18 @@ void AuraEffect::HandleAuraDummy(AuraApplication const* aurApp, uint8 mode, bool
 
             break;
         }
-		case SPELLFAMILY_WARLOCK:
-			{
-				switch(GetId())
-				{
-					// Demonic Pact
-				case 47236:
+        case SPELLFAMILY_WARLOCK:
+            {
+                switch(GetId())
+                {
+                    // Demonic Pact
+                case 47236:
                     if (caster)
-					    caster->CastSpell(caster, 53646, true);
-					break;
-				}
-				break;   
-			}
+                        caster->CastSpell(caster, 53646, true);
+                    break;
+                }
+                break;   
+            }
         }
     }
 }
@@ -7225,6 +7225,13 @@ void AuraEffect::HandlePeriodicDamageAurasTick(Unit* target, Unit* caster) const
     }
     else
         damage = uint32(target->CountPctFromMaxHealth(damage));
+
+    if (m_spellInfo->Effects[m_effIndex].IsTargetingArea() || m_spellInfo->Effects[m_effIndex].IsAreaAuraEffect() || m_spellInfo->Effects[m_effIndex].IsEffect(SPELL_EFFECT_PERSISTENT_AREA_AURA))
+    {
+        damage = int32(float(damage) * target->GetTotalAuraMultiplierByMiscMask(SPELL_AURA_MOD_AOE_DAMAGE_AVOIDANCE, m_spellInfo->SchoolMask));
+        if (caster->GetTypeId() != TYPEID_PLAYER)
+            damage = int32(float(damage) * target->GetTotalAuraMultiplierByMiscMask(SPELL_AURA_MOD_CREATURE_AOE_DAMAGE_AVOIDANCE, m_spellInfo->SchoolMask));
+    }
 
     bool crit = false;
 

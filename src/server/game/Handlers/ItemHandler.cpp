@@ -490,7 +490,7 @@ void WorldSession::HandleSellItemOpcode(WorldPacket & recvData)
 {
     sLog->outDebug(LOG_FILTER_NETWORKIO, "WORLD: Received CMSG_SELL_ITEM");
 
-    if(sWorld->getBoolConfig(CONFIG_ANTISPAM_VENDOR_ENABLE))
+    if (sWorld->getBoolConfig(CONFIG_ANTISPAM_VENDOR_ENABLE))
     {
         time_t now = time(NULL);
         if (now - timeLastSellItemOpcode < sWorld->getIntConfig(CONFIG_ANTISPAM_VENDOR_DELAY))
@@ -784,7 +784,7 @@ void WorldSession::SendListInventory(uint64 vendorGuid)
                 continue;
 
             uint32 leftInStock = !vendorItem->maxcount ? 0xFFFFFFFF : vendor->GetVendorItemCurrentCount(vendorItem);
-            if (!_player->isGameMaster()) // ignore conditions if GM on
+            if (!_player->IsGameMaster()) // ignore conditions if GM on
             {
 
                 ConditionList conditions = sConditionMgr->GetConditionsForNpcVendorEvent(vendor->GetEntry(), vendorItem->item);
@@ -841,7 +841,7 @@ void WorldSession::SendListInventory(uint64 vendorGuid)
                     if (reward.AchievementId)
                         if (!guild->GetAchievementMgr().HasAchieved(reward.AchievementId))
                         {
-                            if(!(reward.AchievementId == 5492 && guild->GetAchievementMgr().HasAchieved(4912)) && !(reward.AchievementId == 4912 && guild->GetAchievementMgr().HasAchieved(5492)))
+                            if (!(reward.AchievementId == 5492 && guild->GetAchievementMgr().HasAchieved(4912)) && !(reward.AchievementId == 4912 && guild->GetAchievementMgr().HasAchieved(5492)))
                             { 
                                 guildRewardCheckPassed = false;
                                 break;
@@ -1304,6 +1304,11 @@ void WorldSession::HandleSocketOpcode(WorldPacket& recvData)
     for (int i = 0; i < MAX_GEM_SOCKETS; ++i)                //get geminfo from dbc storage
         GemProps[i] = (Gems[i]) ? sGemPropertiesStore.LookupEntry(Gems[i]->GetTemplate()->GemProperties) : NULL;
 
+    // Find first prismatic socket
+    int32 firstPrismatic = 0;
+    while (firstPrismatic < MAX_GEM_SOCKETS && itemProto->Socket[firstPrismatic].Color)
+        ++firstPrismatic;
+
     for (int i = 0; i < MAX_GEM_SOCKETS; ++i)                //check for hack maybe
     {
         if (!GemProps[i])
@@ -1316,11 +1321,8 @@ void WorldSession::HandleSocketOpcode(WorldPacket& recvData)
             if (!itemTarget->GetEnchantmentId(PRISMATIC_ENCHANTMENT_SLOT))
                 return;
 
-            // not first not-colored (not normaly used) socket
-            if (i != 0 && !itemProto->Socket[i-1].Color && (i+1 >= MAX_GEM_SOCKETS || itemProto->Socket[i+1].Color))
+            if (i != firstPrismatic)
                 return;
-
-            // ok, this is first not colored socket for item with prismatic socket
         }
 
         // tried to put normal gem in meta socket
@@ -1649,7 +1651,7 @@ void WorldSession::HandleTransmogrifyItems(WorldPacket& recvData)
             }
 
             if (!player->HasItemCount(newEntries[i], 1, false))
-            	return;
+                return;
         }
 
         Item* itemTransmogrifier = NULL;

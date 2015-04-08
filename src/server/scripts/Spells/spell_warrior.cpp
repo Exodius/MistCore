@@ -40,7 +40,7 @@ enum WarriorSpells
     WARRIOR_SPELL_BLOOD_AND_THUNDER             = 84615,
     WARRIOR_SPELL_SHOCKWAVE_STUN                = 132168,
     WARRIOR_SPELL_HEROIC_LEAP_DAMAGE            = 52174,
-    WARRIOR_SPELL_RALLYING_CRY		            = 122507,
+    WARRIOR_SPELL_RALLYING_CRY                    = 122507,
     WARRIOR_SPELL_GLYPH_OF_MORTAL_STRIKE        = 58368,
     WARRIOR_SPELL_SWORD_AND_BOARD               = 50227,
     WARRIOR_SPELL_SHIELD_SLAM                   = 23922,
@@ -1113,16 +1113,12 @@ class spell_warr_deep_wounds : public SpellScriptLoader
             {
                 if (Player* _player = GetCaster()->ToPlayer())
                 {
-                    if (Unit* target = GetHitUnit())
-                    {
-                        if (_player->getLevel() >= 32)
-                        {
-                            if (GetSpellInfo()->Id == WARRIOR_SPELL_THUNDER_CLAP && _player->HasAura(WARRIOR_SPELL_BLOOD_AND_THUNDER))
-                                _player->CastSpell(target, WARRIOR_SPELL_DEEP_WOUNDS, true);
-                            else
-                                _player->CastSpell(target, WARRIOR_SPELL_DEEP_WOUNDS, true);
-                        }
-                    }
+                    if (GetSpellInfo()->Id == WARRIOR_SPELL_THUNDER_CLAP && !_player->HasAura(WARRIOR_SPELL_BLOOD_AND_THUNDER))
+                        return;
+
+                    if (_player->getLevel() >= 32)
+                        if (Unit* target = GetHitUnit())
+                            _player->CastSpell(target, WARRIOR_SPELL_DEEP_WOUNDS, true);
                 }
             }
 
@@ -1176,6 +1172,18 @@ class spell_warr_charge : public SpellScriptLoader
 
                         if (!_player->HasSpell(WARRIOR_SPELL_DOUBLE_TIME))
                             _player->EnergizeBySpell(_player, GetSpellInfo()->Id, 100, POWER_RAGE);
+
+						if (AuraPtr daura = _player->GetAura(WARRIOR_SPELL_DOUBLE_TIME))
+						{
+							
+							if (daura->GetCharges() < 1)
+								daura->SetCharges(daura->GetCharges() + 1);
+							else{
+								daura->SetCharges(0);
+								_player->AddSpellCooldown(100, 0, time(NULL) + 20);
+							}
+
+						}
                     }
                 }
             }

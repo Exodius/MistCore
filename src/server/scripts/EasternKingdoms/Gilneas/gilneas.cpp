@@ -2232,7 +2232,7 @@ public:
             player->SendMovieStart(21);
             player->CastSpell(player, 93477, true);
             player->learnSpell(68996, false);
-	     player->learnSpell(94098, false);
+         player->learnSpell(94098, false);
             player->CastSpell(player, 68996, true);
             player->RemoveAurasDueToSpell(72870);
 
@@ -2930,9 +2930,8 @@ public:
     bool OnQuestAccept(Player* player, Creature* creature, Quest const* quest)
     {
         if (quest->GetQuestId() == 14212)
-        {
-	     player->TeleportTo(638, -1535.24, 1584.37, 26.53, 0.78, 0); //teleport to zone
-        }
+            player->TeleportTo(638, -1535.24f, 1584.37f, 26.53f, 0.78f, 0.0f); //teleport to zone
+
         return true;
     }
 };
@@ -2946,10 +2945,10 @@ public:
     {
         if (quest->GetQuestId() == 14375)
         {
-	     player->RemoveAllAuras();
-	     player->CastSpell(player, 93477, true);
+         player->RemoveAllAuras();
+         player->CastSpell(player, 93477, true);
             player->learnSpell(68996, false);
-	     player->learnSpell(94098, false);
+         player->learnSpell(94098, false);
             player->CastSpell(player, 68996, true);
             player->RemoveAurasDueToSpell(72870);
         }

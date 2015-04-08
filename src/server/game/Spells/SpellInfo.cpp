@@ -863,9 +863,9 @@ SpellInfo::SpellInfo(SpellEntry const* spellEntry, uint32 difficulty)
     PreventionType = _categorie ? _categorie->PreventionType : 0;
 
     if (SpellCategoryEntry const* categoryInfo = sSpellCategoryStores.LookupEntry(Category))
-    	CategoryFlags = categoryInfo->Flags;
+        CategoryFlags = categoryInfo->Flags;
     else
-    	CategoryFlags = 0;
+        CategoryFlags = 0;
 
     // SpellClassOptionsEntry
     SpellClassOptionsEntry const* _class = GetSpellClassOptions();
@@ -970,13 +970,13 @@ SpellInfo::SpellInfo(SpellEntry const* spellEntry, uint32 difficulty)
     for (uint32 i = 0; i < sSpecializationSpellStore.GetNumRows(); i++)
     {
         specializationInfo = sSpecializationSpellStore.LookupEntry(i);
-        if(!specializationInfo)
+        if (!specializationInfo)
             continue;
 
         if (specializationInfo->LearnSpell == Id)
             SpecializationIdList.push_back(specializationInfo->SpecializationEntry);
 
-        if(specializationInfo->OverrideSpell == Id)
+        if (specializationInfo->OverrideSpell == Id)
             OverrideSpellList.push_back(specializationInfo->LearnSpell);
     }
 
@@ -1750,7 +1750,7 @@ SpellCastResult SpellInfo::CheckTarget(Unit const* caster, WorldObject const* ta
         if (!unitTarget->ToPlayer()->IsVisible())
             return SPELL_FAILED_BM_OR_INVISGOD;
 
-        if (unitTarget->ToPlayer()->isGameMaster())
+        if (unitTarget->ToPlayer()->IsGameMaster())
             return SPELL_FAILED_BM_OR_INVISGOD;
     }
 

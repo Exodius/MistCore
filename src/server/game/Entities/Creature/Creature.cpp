@@ -273,32 +273,32 @@ bool Creature::InitEntry(uint32 Entry, uint32 /*team*/, const CreatureData* data
     // Si l'entry heroic du mode de joueur est introuvable, on utilise l'entry du mode normal correpondant au nombre de joueurs du mode
     CreatureTemplate const* cinfo = normalInfo;
     uint8 diff = uint8(GetMap()->GetSpawnMode());
-    if(diff)
+    if (diff)
     {
         if (normalInfo->DifficultyEntry[diff - 1])
         {
             cinfo = sObjectMgr->GetCreatureTemplate(normalInfo->DifficultyEntry[diff - 1]);
 
             // check and reported at startup, so just ignore (restore normalInfo)
-            if(!cinfo)
+            if (!cinfo)
                 cinfo = normalInfo;
         }
 
-        if(cinfo == normalInfo && (diff == MAN25_HEROIC_DIFFICULTY || diff == RAID_TOOL_DIFFICULTY) && normalInfo->DifficultyEntry[MAN25_DIFFICULTY - 1])
+        if (cinfo == normalInfo && (diff == MAN25_HEROIC_DIFFICULTY || diff == RAID_TOOL_DIFFICULTY) && normalInfo->DifficultyEntry[MAN25_DIFFICULTY - 1])
         {
             cinfo = sObjectMgr->GetCreatureTemplate(normalInfo->DifficultyEntry[MAN25_DIFFICULTY - 1]);
 
             // check and reported at startup, so just ignore (restore normalInfo)
-            if(!cinfo)
+            if (!cinfo)
                 cinfo = normalInfo;
         }
 
-        if(cinfo == normalInfo &&  diff == MAN10_HEROIC_DIFFICULTY && normalInfo->DifficultyEntry[MAN10_DIFFICULTY - 1])
+        if (cinfo == normalInfo &&  diff == MAN10_HEROIC_DIFFICULTY && normalInfo->DifficultyEntry[MAN10_DIFFICULTY - 1])
         {
             cinfo = sObjectMgr->GetCreatureTemplate(normalInfo->DifficultyEntry[MAN10_DIFFICULTY - 1]);
 
             // check and reported at startup, so just ignore (restore normalInfo)
-            if(!cinfo)
+            if (!cinfo)
                 cinfo = normalInfo;
         }
     }
@@ -608,7 +608,7 @@ void Creature::Update(uint32 diff)
 
             bool bInCombat = isInCombat() && (!getVictim() ||                                        // if isInCombat() is true and this has no victim
                              !getVictim()->GetCharmerOrOwnerPlayerOrPlayerItself() ||                // or the victim/owner/charmer is not a player
-                             !getVictim()->GetCharmerOrOwnerPlayerOrPlayerItself()->isGameMaster()); // or the victim/owner/charmer is not a GameMaster
+                             !getVictim()->GetCharmerOrOwnerPlayerOrPlayerItself()->IsGameMaster()); // or the victim/owner/charmer is not a GameMaster
 
             /*if (m_regenTimer <= diff)
             {*/
@@ -868,7 +868,7 @@ bool Creature::isCanTrainingOf(Player* player, bool msg) const
 
     TrainerSpellData const* trainer_spells = GetTrainerSpells();
 
-    if ((!trainer_spells || trainer_spells->spellList.empty()) && GetCreatureTemplate()->trainer_type != TRAINER_TYPE_PETS)
+    if ((!trainer_spells || trainer_spells->spellList.empty()) && GetCreatureTemplate()->trainer_type != TRAINER_TYPE_PETS && GetCreatureTemplate()->trainer_type != TRAINER_TYPE_CLASS )
     {
         sLog->outError(LOG_FILTER_SQL, "Creature %u (Entry: %u) have UNIT_NPC_FLAG_TRAINER but have empty trainer spell list.",
             GetGUIDLow(), GetEntry());
@@ -1718,7 +1718,7 @@ void Creature::setDeathState(DeathState s)
 
 void Creature::Respawn(bool force)
 {
-	Movement::MoveSplineInit(*this).Stop(true);
+    Movement::MoveSplineInit(*this).Stop(true);
     DestroyForNearbyPlayers();
 
     if (force)
@@ -2350,7 +2350,7 @@ void Creature::SetInCombatWithZone()
     {
         if (Player* player = i->getSource())
         {
-            if (player->isGameMaster())
+            if (player->IsGameMaster())
                 continue;
 
             if (player->isAlive())

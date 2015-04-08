@@ -1369,58 +1369,6 @@ class spell_pri_spirit_shell : public SpellScriptLoader
         }
 };
 
-// Purify - 527
-class spell_pri_purify : public SpellScriptLoader
-{
-    public:
-        spell_pri_purify() : SpellScriptLoader("spell_pri_purify") { }
-
-        class spell_pri_purify_SpellScript : public SpellScript
-        {
-            PrepareSpellScript(spell_pri_purify_SpellScript);
-
-            SpellCastResult CheckCleansing()
-            {
-                if (Unit* caster = GetCaster())
-                {
-                    if (Unit* target = GetExplTargetUnit())
-                    {
-                        // Create dispel mask by dispel type
-                        for (int8 i = 0; i < MAX_SPELL_EFFECTS; i++)
-                        {
-                            uint32 dispel_type = GetSpellInfo()->Effects[i].MiscValue;
-                            uint32 dispelMask  = GetSpellInfo()->GetDispelMask(DispelType(dispel_type));
-
-                            // Purity can dispell Magic.
-                            if (GetSpellInfo()->Id == 527)
-                                dispelMask = ((1<<DISPEL_MAGIC));
-
-                            DispelChargesList dispelList;
-                            target->GetDispellableAuraList(caster, dispelMask, dispelList);
-
-                            if (dispelList.empty())
-                                return SPELL_FAILED_NOTHING_TO_DISPEL;
-
-                            return SPELL_CAST_OK;
-                        }
-                    }
-                }
-
-                return SPELL_CAST_OK;
-            }
-
-            void Register()
-            {
-                OnCheckCast += SpellCheckCastFn(spell_pri_purify_SpellScript::CheckCleansing);
-            }
-        };
-
-        SpellScript* GetSpellScript() const
-        {
-            return new spell_pri_purify_SpellScript();
-        }
-};
-
 // Devouring Plague - 2944
 class spell_pri_devouring_plague : public SpellScriptLoader
 {
@@ -1441,6 +1389,7 @@ class spell_pri_devouring_plague : public SpellScriptLoader
                         {
                             uint8 powerUsed = _player->GetPower(POWER_SHADOW_ORB) + 1; // Don't forget PowerCost
 
+                            GetCaster()->SetPower(POWER_SHADOW_ORB, 0);
                             // Shadow Orb visual
                             if (_player->HasAura(77487))
                                 _player->RemoveAura(77487);
@@ -1483,8 +1432,7 @@ class spell_pri_devouring_plague : public SpellScriptLoader
                 if (!GetCaster())
                     return;
 
-                powerUsed = GetCaster()->GetPower(POWER_SHADOW_ORB);
-                GetCaster()->SetPower(POWER_SHADOW_ORB, 0);
+                powerUsed = GetCaster()->GetPower(POWER_SHADOW_ORB) + 1;
 
                 amount *= powerUsed;
             }
@@ -1619,13 +1567,13 @@ class spell_pri_evangelism : public SpellScriptLoader
         {
             PrepareSpellScript(spell_pri_evangelism_SpellScript);
 
-			void HandleOnHit()
-			{
+            void HandleOnHit()
+            {
                 if (Player* _player = GetCaster()->ToPlayer())
                     if (_player->HasAura(PRIEST_EVANGELISM_AURA))
                         if (GetHitDamage())
                             _player->CastSpell(_player, PRIEST_EVANGELISM_STACK, true);
-			}
+            }
 
             void Register()
             {
@@ -1649,24 +1597,24 @@ class spell_pri_archangel : public SpellScriptLoader
         {
             PrepareSpellScript(spell_pri_archangel_SpellScript);
 
-			void HandleOnHit()
-			{
-				if (Player* _player = GetCaster()->ToPlayer())
-				{
+            void HandleOnHit()
+            {
+                if (Player* _player = GetCaster()->ToPlayer())
+                {
                     int stackNumber = _player->GetAura(PRIEST_EVANGELISM_STACK)->GetStackAmount();
-					if (!(stackNumber > 0))
-						return;
+                    if (!(stackNumber > 0))
+                        return;
 
-					if (AuraPtr archangel = _player->GetAura(GetSpellInfo()->Id))
-					{
-						if (archangel->GetEffect(0))
-						{
+                    if (AuraPtr archangel = _player->GetAura(GetSpellInfo()->Id))
+                    {
+                        if (archangel->GetEffect(0))
+                        {
                             archangel->GetEffect(0)->ChangeAmount(archangel->GetEffect(0)->GetAmount() * stackNumber);
                             _player->RemoveAura(PRIEST_EVANGELISM_STACK);
-						}
-					}
-				}
-			}
+                        }
+                    }
+                }
+            }
 
             void Register()
             {
@@ -2701,7 +2649,6 @@ void AddSC_priest_spell_scripts()
     new spell_pri_rapture();
     new spell_pri_atonement();
     new spell_pri_spirit_shell();
-    new spell_pri_purify();
     new spell_pri_devouring_plague();
     new spell_pri_phantasm();
     new spell_pri_mind_spike();

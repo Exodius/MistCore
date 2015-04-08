@@ -103,7 +103,8 @@ char* const Locales[] =
     "frFR", "koKR",
     "zhCN", "zhTW",
     "enCN", "enTW",
-    "esMX", "ruRU"
+    "esMX", "ruRU",
+    "itIT"
 };
 
 TCHAR* const LocalesT[] =
@@ -114,9 +115,10 @@ TCHAR* const LocalesT[] =
     _T("zhCN"), _T("zhTW"),
     _T("enCN"), _T("enTW"),
     _T("esMX"), _T("ruRU")
+    _T("itIT")
 };
 
-#define LOCALES_COUNT 12
+#define LOCALES_COUNT 13
 
 void CreateDir(std::string const& path)
 {
@@ -1143,12 +1145,30 @@ bool LoadLocaleMPQFile(int locale)
     }
 
     char const* prefix = NULL;
+    for (int i = 0; i < sizeof(CONF_mpq_dbc_list) / sizeof(char*); i++)
+    {
+	
+        memset(buff, 0, sizeof(buff));
+        prefix = "";
+        _stprintf(buff, _T("%s/Data/%s"), input_path, CONF_mpq_dbc_list[i]);
+
+
+        if (!SFileOpenPatchArchive(LocaleMpq, buff, prefix, 0))
+        {
+            if (GetLastError() != ERROR_FILE_NOT_FOUND)
+                _tprintf(_T("Cannot open patch archive %s\n"), buff);
+            continue;
+        }
+        else
+            _tprintf(_T("Loaded %s\n"), buff);
+    }
+
     for (int i = 0; Builds[i] && Builds[i] <= CONF_TargetBuild; ++i)
     {
-        // Do not attempt to read older MPQ patch archives past this build, they were merged with base
+	    // Do not attempt to read older MPQ patch archives past this build, they were merged with base
         // and trying to read them together with new base will not end well
         if (CONF_TargetBuild >= NEW_BASE_SET_BUILD && Builds[i] < NEW_BASE_SET_BUILD)
-           continue;
+            continue;
 
         memset(buff, 0, sizeof(buff));
         prefix = "";
@@ -1165,30 +1185,13 @@ bool LoadLocaleMPQFile(int locale)
             _tprintf(_T("Loaded %s\n"), buff);
     }
 
-    for (int i = 0; i < sizeof(CONF_mpq_dbc_list) / sizeof(char*); i++)
-    {
-        memset(buff, 0, sizeof(buff));
-        prefix = "";
-        _stprintf(buff, _T("%s/Data/%s"), input_path, CONF_mpq_dbc_list[i]);
-
-
-        if (!SFileOpenPatchArchive(LocaleMpq, buff, prefix, 0))
-        {
-            if (GetLastError() != ERROR_FILE_NOT_FOUND)
-                _tprintf(_T("Cannot open patch archive %s\n"), buff);
-            continue;
-        }
-        else
-            _tprintf(_T("Loaded %s\n"), buff);
-    }
-
 
     for (int i = 0; Builds[i] && Builds[i] <= CONF_TargetBuild; ++i)
     {
         // Do not attempt to read older MPQ patch archives past this build, they were merged with base
         // and trying to read them together with new base will not end well
         if (CONF_TargetBuild >= NEW_BASE_SET_BUILD && Builds[i] < NEW_BASE_SET_BUILD)
-           continue;
+            continue;
 
         memset(buff, 0, sizeof(buff));
         prefix = "";

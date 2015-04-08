@@ -119,7 +119,7 @@ namespace Movement
         // Unknow 5.0.5 MoP
         uint16 unkCount = 0;
         data << uint16(unkCount); // unk 5.0.5 count
-        if(unkCount)
+        if (unkCount)
         {
             data << float(0);
             data << uint16(0);
@@ -144,7 +144,7 @@ namespace Movement
         // Unknow 5.0.5 MoP
         uint16 unkCount = 0;
         data << uint16(unkCount); // unk 5.0.5 count
-        if(unkCount)
+        if (unkCount)
         {
             data << float(0);
             data << uint16(0);
@@ -170,7 +170,7 @@ namespace Movement
         // Unknow 5.0.5 MoP
         uint16 unkCount = 0;
         data << uint16(unkCount); // unk 5.0.5 count
-        if(unkCount)
+        if (unkCount)
         {
             data << float(0);
             data << uint16(0);
@@ -222,10 +222,10 @@ namespace Movement
                 ObjectGuid targetGuid = moveSpline.facing.target;
                 data.WriteBits(0, 2);
                 data.WriteBit(targetGuid[4]);
-				data.WriteBit(targetGuid[5]);
-				data.WriteBit(targetGuid[0]);
-				data.WriteBit(targetGuid[7]);
-				data.WriteBit(targetGuid[1]);
+                data.WriteBit(targetGuid[5]);
+                data.WriteBit(targetGuid[0]);
+                data.WriteBit(targetGuid[7]);
+                data.WriteBit(targetGuid[1]);
                 data.WriteBit(targetGuid[3]);
                 data.WriteBit(targetGuid[2]);
                 data.WriteBit(targetGuid[6]);

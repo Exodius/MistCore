@@ -274,6 +274,9 @@ class LFGMgr
     public:
         void Update(uint32 diff);
 
+        // Required Item Level for dungeons
+        void LoadRequiredLevels();
+
         // Reward
         void LoadRewards();
         void RewardDungeonDoneFor(const uint32 dungeonId, Player* player);
@@ -325,7 +328,7 @@ class LFGMgr
         LfgQueueInfo* GetLfgQueueInfo(uint64 guid) const
         {
             LfgQueueInfoMap::const_iterator itr = m_QueueInfoMap.find(guid);
-            if(itr != m_QueueInfoMap.end())
+            if (itr != m_QueueInfoMap.end())
                 return itr->second;
 
             return NULL;
@@ -377,6 +380,8 @@ class LFGMgr
         LfgEntrancePositionMap m_entrancePositions;        ///< Stores special entrance positions
         // Reward System
         LfgRewardMap m_RewardMap;                          ///< Stores rewards for random dungeons
+        // Required Item Level
+        LfgRequiredIlvlMap m_RequiredIlvlMap;
         // Queue
         LfgQueueInfoMap m_QueueInfoMap;                    ///< Queued groups
         LfgGuidListMap m_currentQueue;                     ///< Ordered list. Used to find groups

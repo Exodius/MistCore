@@ -353,7 +353,7 @@ bool ChatHandler::ExecuteCommandInTable(ChatCommand* table, const char* text, co
                     std::string sel_name = "ERROR";
                     uint32 sel_acc_guid = 0;
 
-                    if(selected)
+                    if (selected)
                     {
                         sel_guid = selected->GetGUIDLow();
                         sel_name = selected->GetName();
@@ -776,6 +776,24 @@ Creature* ChatHandler::getSelectedCreature()
         return NULL;
 
     return ObjectAccessor::GetCreatureOrPetOrVehicle(*m_session->GetPlayer(), m_session->GetPlayer()->GetSelection());
+}
+
+Player* ChatHandler::getSelectedPlayerOrSelf()
+{
+    if (!m_session)
+        return NULL;
+
+    uint64 selected = m_session->GetPlayer()->GetSelection();
+    if (!selected)
+        return m_session->GetPlayer();
+
+    // first try with selected target
+    Player* targetPlayer = ObjectAccessor::FindPlayer(selected);
+    // if the target is not a player, then return self
+    if (!targetPlayer)
+        targetPlayer = m_session->GetPlayer();
+
+    return targetPlayer;
 }
 
 char* ChatHandler::extractKeyFromLink(char* text, char const* linkType, char** something1)

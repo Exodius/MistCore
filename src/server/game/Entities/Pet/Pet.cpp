@@ -575,10 +575,10 @@ void Pet::DeleteFromDB(uint32 guidlow)
 {
     SQLTransaction trans = CharacterDatabase.BeginTransaction();
 
-    trans->PAppend("DELETE FROM character_pet WHERE id = '%u'", guidlow);	  	
-    trans->PAppend("DELETE FROM character_pet_declinedname WHERE id = '%u'", guidlow);	  	
-    trans->PAppend("DELETE FROM pet_aura WHERE guid = '%u'", guidlow);	  	
-    trans->PAppend("DELETE FROM pet_spell WHERE guid = '%u'", guidlow);	  	
+    trans->PAppend("DELETE FROM character_pet WHERE id = '%u'", guidlow);          
+    trans->PAppend("DELETE FROM character_pet_declinedname WHERE id = '%u'", guidlow);          
+    trans->PAppend("DELETE FROM pet_aura WHERE guid = '%u'", guidlow);          
+    trans->PAppend("DELETE FROM pet_spell WHERE guid = '%u'", guidlow);          
     trans->PAppend("DELETE FROM pet_spell_cooldown WHERE guid = '%u'", guidlow);
 
     CharacterDatabase.CommitTransaction(trans);
@@ -1589,7 +1589,7 @@ void Pet::_LoadAuras(PreparedQueryResult auraResult, PreparedQueryResult auraEff
     }
 
     std::list<auraEffectData> auraEffectList;
-    if(resultEffect)
+    if (resultEffect)
     {
         do
         {
@@ -1651,7 +1651,7 @@ void Pet::_LoadAuras(PreparedQueryResult auraResult, PreparedQueryResult auraEff
 
             for(std::list<auraEffectData>::iterator itr = auraEffectList.begin(); itr != auraEffectList.end(); ++itr)
             {
-                if(itr->_slot == slot)
+                if (itr->_slot == slot)
                 {
                     damage[itr->_effect] = itr->_amount;
                     baseDamage[itr->_effect] = itr->_baseamount;
@@ -1694,7 +1694,7 @@ void Pet::_SaveAuras(SQLTransaction& trans)
         AuraPtr aura = itr->second;
         AuraApplication * foundAura = GetAuraApplication(aura->GetId(), aura->GetCasterGUID(), aura->GetCastItemGUID());
 
-        if(!foundAura)
+        if (!foundAura)
             continue;
 
         int32 damage[MAX_SPELL_EFFECTS];
