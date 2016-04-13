@@ -410,25 +410,43 @@ void WorldSession::SendBroadcastTextDb2Reply(uint32 entry)
 {
     ByteBuffer buff;
     WorldPacket data(SMSG_DB_REPLY);
-
+    std::string text0, text1;
     GossipText const* pGossip = sObjectMgr->GetGossipText(entry);
-
     if (!pGossip)
+    {
         pGossip = sObjectMgr->GetGossipText(DEFAULT_GREETINGS_GOSSIP);
+        entry=DEFAULT_GREETINGS_GOSSIP;
+    }
+    if(pGossip)
+    {
+        text0=pGossip->Options[0].Text_0;
+        text1=pGossip->Options[0].Text_1;
+        int loc_idx = GetSessionDbLocaleIndex();
+        if (loc_idx >= 0)
+        {
+            if (NpcTextLocale const* nl = sObjectMgr->GetNpcTextLocale(entry))
+            {
+                ObjectMgr::GetLocaleString(nl->Text_0[0], loc_idx, text0);
+                ObjectMgr::GetLocaleString(nl->Text_1[0], loc_idx, text1);
+            }
+        }
+    }
+    
+    else
+    {
+        text0 = "Greetings, $N";
+        text1 = "Greetings, $N";
+    }
 
-    std::string text = "Greetings, $N";
-
-    uint16 size1 = pGossip ? pGossip->Options[0].Text_0.length() : text.length();
-    uint16 size2 = pGossip ? pGossip->Options[0].Text_1.length() : text.length();
+    uint16 size1 = text0.length();
+    uint16 size2 = text1.length();
 
     buff << uint32(entry);
     buff << uint32(0); // unk
     buff << uint16(size1);
-    if (size1)
-        buff << std::string(pGossip ? pGossip->Options[0].Text_0 : text);
+    buff << text0;
     buff << uint16(size2);
-    if (size2)
-        buff << std::string(pGossip ? pGossip->Options[0].Text_1 : text);
+    buff << text1;
     buff << uint32(0);
     buff << uint32(0);
     buff << uint32(0);
