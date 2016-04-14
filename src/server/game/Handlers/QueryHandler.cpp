@@ -411,11 +411,12 @@ void WorldSession::SendBroadcastTextDb2Reply(uint32 entry)
     ByteBuffer buff;
     WorldPacket data(SMSG_DB_REPLY);
     std::string text0, text1;
-    GossipText const* pGossip = sObjectMgr->GetGossipText(entry);
+    uint32 textid=entry;
+    GossipText const* pGossip = sObjectMgr->GetGossipText(textid);
     if (!pGossip)
     {
         pGossip = sObjectMgr->GetGossipText(DEFAULT_GREETINGS_GOSSIP);
-        entry=DEFAULT_GREETINGS_GOSSIP;
+        textid=DEFAULT_GREETINGS_GOSSIP;
     }
     if(pGossip)
     {
@@ -424,7 +425,7 @@ void WorldSession::SendBroadcastTextDb2Reply(uint32 entry)
         int loc_idx = GetSessionDbLocaleIndex();
         if (loc_idx >= 0)
         {
-            if (NpcTextLocale const* nl = sObjectMgr->GetNpcTextLocale(entry))
+            if (NpcTextLocale const* nl = sObjectMgr->GetNpcTextLocale(textid))
             {
                 ObjectMgr::GetLocaleString(nl->Text_0[0], loc_idx, text0);
                 ObjectMgr::GetLocaleString(nl->Text_1[0], loc_idx, text1);
