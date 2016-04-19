@@ -860,12 +860,20 @@ bool Pet::CreateBaseAtCreature(Creature* creature)
     }
 
     SetDisplayId(creature->GetDisplayId());
-
-    if (CreatureFamilyEntry const* cFamily = sCreatureFamilyStore.LookupEntry(cinfo->family))
-        SetName(cFamily->Name);
-    else
-        SetName(creature->GetNameForLocaleIdx(sObjectMgr->GetDBCLocaleIndex()));
-
+    
+    {
+        std::string PetName;
+        if (CreatureFamilyEntry const* cFamily = sCreatureFamilyStore.LookupEntry(cinfo->family))
+            PetName=cFamily->Name;
+        else
+            PetName=creature->GetNameForLocaleIdx(sObjectMgr->GetDBCLocaleIndex());
+        
+        int loc_idx = GetOwner()->GetSession()->GetSessionDbLocaleIndex();
+        if (loc_idx >= 0)
+            if (CreatureFamilyLocale const* pname = sObjectMgr->GetCreatureFamilyLocale(cinfo->family))
+                ObjectMgr::GetLocaleString(pname->Name, loc_idx, PetName);
+            SetName(PetName);
+    }
     return true;
 }
 
@@ -874,8 +882,18 @@ bool Pet::CreateBaseAtCreatureInfo(CreatureTemplate const* cinfo, Unit* owner)
     if (!CreateBaseAtTamed(cinfo, owner->GetMap(), owner->GetPhaseMask()))
         return false;
 
-    if (CreatureFamilyEntry const* cFamily = sCreatureFamilyStore.LookupEntry(cinfo->family))
-        SetName(cFamily->Name);
+    {
+        std::string PetName;
+        if (CreatureFamilyEntry const* cFamily = sCreatureFamilyStore.LookupEntry(cinfo->family))
+            PetName=cFamily->Name;
+        
+        int loc_idx = GetOwner()->GetSession()->GetSessionDbLocaleIndex();
+        if (loc_idx >= 0)
+            if (CreatureFamilyLocale const* pname = sObjectMgr->GetCreatureFamilyLocale(cinfo->family))
+                ObjectMgr::GetLocaleString(pname->Name, loc_idx, PetName);
+        
+        SetName(PetName);
+    }
 
     Relocate(owner->GetPositionX(), owner->GetPositionY(), owner->GetPositionZ(), owner->GetOrientation());
 

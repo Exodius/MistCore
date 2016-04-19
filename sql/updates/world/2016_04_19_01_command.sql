@@ -1,0 +1,1 @@
+INSERT INTO command (`name`, `security`, `help`) VALUES ('reload locales_creature_family', 4, 'Syntax: .reload locales_creature_family\nReload locales_creature_family table.');

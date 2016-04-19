@@ -390,6 +390,7 @@ typedef std::map<uint64, uint64> LinkedRespawnContainer;
 typedef ACE_Based::LockedMap<uint32, CreatureData> CreatureDataContainer;
 typedef ACE_Based::LockedMap<uint32, GameObjectData> GameObjectDataContainer;
 typedef ACE_Based::LockedMap<uint32, CreatureLocale> CreatureLocaleContainer;
+typedef ACE_Based::LockedMap<uint32, CreatureFamilyLocale> CreatureFamilyLocaleContainer;
 typedef ACE_Based::LockedMap<uint32, GameObjectLocale> GameObjectLocaleContainer;
 typedef ACE_Based::LockedMap<uint32, ItemLocale> ItemLocaleContainer;
 typedef ACE_Based::LockedMap<uint32, QuestLocale> QuestLocaleContainer;
@@ -864,6 +865,7 @@ class ObjectMgr
         void LoadDbScriptStrings();
         void LoadCreatureClassLevelStats();
         void LoadCreatureLocales();
+        void LoadCreatureFamilyLocales();
         void LoadCreatureTemplates();
         void LoadCreatureTemplateAddons();
         void CheckCreatureTemplate(CreatureTemplate const* cInfo);
@@ -1030,6 +1032,12 @@ class ObjectMgr
         {
             PageTextLocaleContainer::const_iterator itr = _pageTextLocaleStore.find(entry);
             if (itr == _pageTextLocaleStore.end()) return NULL;
+            return &itr->second;
+        }
+        CreatureFamilyLocale const* GetCreatureFamilyLocale(uint32 entry) const
+        {
+            CreatureFamilyLocaleContainer::const_iterator itr = _creatureFamilyLocaleStore.find(entry);
+            if (itr == _creatureFamilyLocaleStore.end()) return NULL;
             return &itr->second;
         }
         GossipMenuItemsLocale const* GetGossipMenuItemsLocale(uint32 entry) const
@@ -1328,6 +1336,7 @@ class ObjectMgr
         EquipmentInfoContainer _equipmentInfoStore;
         LinkedRespawnContainer _linkedRespawnStore;
         CreatureLocaleContainer _creatureLocaleStore;
+        CreatureFamilyLocaleContainer _creatureFamilyLocaleStore;
         //GameObjectDataContainer _gameObjectDataStore;
         GameObjectLocaleContainer _gameObjectLocaleStore;
         GameObjectTemplateContainer _gameObjectTemplateStore;

@@ -320,6 +320,33 @@ void ObjectMgr::LoadCreatureLocales()
     sLog->outInfo(LOG_FILTER_SERVER_LOADING, ">> Loaded %lu creature locale strings in %u ms", (unsigned long)_creatureLocaleStore.size(), GetMSTimeDiffToNow(oldMSTime));
 }
 
+void ObjectMgr::LoadCreatureFamilyLocales()
+{
+    uint32 oldMSTime = getMSTime();
+    
+    _creatureFamilyLocaleStore.clear();                             // need for reload case
+    
+    QueryResult result = WorldDatabase.Query("SELECT entry, name_loc1, name_loc2, name_loc3, name_loc4, name_loc5, name_loc6, name_loc7, name_loc8, name_loc9, name_loc10 FROM locales_creature_family");
+    
+    if (!result)
+        return;
+    
+    do
+    {
+        Field* fields = result->Fetch();
+        
+        uint32 entry = fields[0].GetUInt32();
+        
+        CreatureFamilyLocale & data = _creatureFamilyLocaleStore[entry];
+        
+        for (uint8 i = 1; i < TOTAL_LOCALES; ++i)
+            AddLocaleString(fields[i].GetString(), LocaleConstant(i), data.Name);
+    }
+    while (result->NextRow());
+    
+    sLog->outInfo(LOG_FILTER_SERVER_LOADING, ">> Loaded %lu CreatureFamily locale strings in %u ms", (unsigned long)_creatureFamilyLocaleStore.size(), GetMSTimeDiffToNow(oldMSTime));
+}
+
 void ObjectMgr::LoadGossipMenuItemsLocales()
 {
     uint32 oldMSTime = getMSTime();
