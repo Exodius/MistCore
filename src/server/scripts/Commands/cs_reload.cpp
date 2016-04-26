@@ -106,6 +106,7 @@ public:
             { "locales_achievement_reward",   SEC_ADMINISTRATOR, true,  &HandleReloadLocalesAchievementRewardCommand,   "", NULL },
             { "locales_creature",             SEC_ADMINISTRATOR, true,  &HandleReloadLocalesCreatureCommand,            "", NULL },
             { "locales_creature_family",      SEC_ADMINISTRATOR, true,  &HandleReloadLocalesCreatureFamilyCommand,            "", NULL },
+            { "locales_area",      SEC_ADMINISTRATOR, true,  &HandleReloadLocalesAreaCommand,            "", NULL },
             { "locales_creature_text",        SEC_ADMINISTRATOR, true,  &HandleReloadLocalesCreatureTextCommand,        "", NULL },
             { "locales_gameobject",           SEC_ADMINISTRATOR, true,  &HandleReloadLocalesGameobjectCommand,          "", NULL },
             { "locales_gossip_menu_option",   SEC_ADMINISTRATOR, true,  &HandleReloadLocalesGossipMenuOptionCommand,    "", NULL },
@@ -1149,6 +1150,22 @@ public:
         sLog->outInfo(LOG_FILTER_GENERAL, "Re-Loading Locales Creature Family ... ");
         sObjectMgr->LoadCreatureFamilyLocales();
         handler->SendGlobalGMSysMessage("DB table `locales_creature_family` reloaded.");
+        return true;
+    }
+    
+    static bool HandleReloadLocalesAreaCommand(ChatHandler* handler, const char* /*args*/)
+    {
+        sLog->outInfo(LOG_FILTER_GENERAL, "Re-Loading Locales Area ... ");
+        sObjectMgr->LoadAreaLocales();
+        handler->SendGlobalGMSysMessage("DB table `locales_area` reloaded.");
+        return true;
+    }
+    
+    static bool HandleReloadLocalesChatChannelCommand(ChatHandler* handler, const char* /*args*/)
+    {
+        sLog->outInfo(LOG_FILTER_GENERAL, "Re-Loading Locales Chat Channel ... ");
+        sObjectMgr->LoadChatChannelLocales();
+        handler->SendGlobalGMSysMessage("DB table `locales_chat_channel` reloaded.");
         return true;
     }
     

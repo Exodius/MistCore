@@ -1443,7 +1443,8 @@ void World::SetInitialWorldSettings()
     sObjectMgr->LoadGossipMenuItemsLocales();
     sObjectMgr->LoadCreatureFamilyLocales();
     sObjectMgr->LoadPointOfInterestLocales();
-
+    sObjectMgr->LoadAreaLocales();
+    sObjectMgr->LoadChatChannelLocales();
     sObjectMgr->SetDBCLocaleIndex(GetDefaultDbcLocale());        // Get once for all the locale index of DBC language (console/broadcasts)
     sLog->outInfo(LOG_FILTER_SERVER_LOADING, ">> Localization strings loaded in %u ms", GetMSTimeDiffToNow(oldMSTime));
 

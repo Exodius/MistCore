@@ -901,6 +901,16 @@ enum DungeonStatusFlag
     RAID_STATUSFLAG_25MAN_HEROIC = 0x08
 };
 
+struct AreaLocale
+{
+    StringVector Name;
+};
+
+struct ChatChannelLocale
+{
+    StringVector Name;
+};
+
 struct AccessRequirement
 {
     uint8  levelMin;

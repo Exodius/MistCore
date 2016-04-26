@@ -391,6 +391,8 @@ typedef ACE_Based::LockedMap<uint32, CreatureData> CreatureDataContainer;
 typedef ACE_Based::LockedMap<uint32, GameObjectData> GameObjectDataContainer;
 typedef ACE_Based::LockedMap<uint32, CreatureLocale> CreatureLocaleContainer;
 typedef ACE_Based::LockedMap<uint32, CreatureFamilyLocale> CreatureFamilyLocaleContainer;
+typedef ACE_Based::LockedMap<uint32, AreaLocale> AreaLocaleContainer;
+typedef ACE_Based::LockedMap<uint32, ChatChannelLocale> ChatChannelLocaleContainer;
 typedef ACE_Based::LockedMap<uint32, GameObjectLocale> GameObjectLocaleContainer;
 typedef ACE_Based::LockedMap<uint32, ItemLocale> ItemLocaleContainer;
 typedef ACE_Based::LockedMap<uint32, QuestLocale> QuestLocaleContainer;
@@ -866,6 +868,8 @@ class ObjectMgr
         void LoadCreatureClassLevelStats();
         void LoadCreatureLocales();
         void LoadCreatureFamilyLocales();
+        void LoadAreaLocales();
+        void LoadChatChannelLocales();
         void LoadCreatureTemplates();
         void LoadCreatureTemplateAddons();
         void CheckCreatureTemplate(CreatureTemplate const* cInfo);
@@ -1038,6 +1042,18 @@ class ObjectMgr
         {
             CreatureFamilyLocaleContainer::const_iterator itr = _creatureFamilyLocaleStore.find(entry);
             if (itr == _creatureFamilyLocaleStore.end()) return NULL;
+            return &itr->second;
+        }
+        AreaLocale const* GetAreaLocale(uint32 entry) const
+        {
+            AreaLocaleContainer::const_iterator itr = _areaLocaleStore.find(entry);
+            if (itr == _areaLocaleStore.end()) return NULL;
+            return &itr->second;
+        }
+        ChatChannelLocale const* GetChatChannelLocale(uint32 entry) const
+        {
+            ChatChannelLocaleContainer::const_iterator itr = _chatChannelLocaleStore.find(entry);
+            if (itr == _chatChannelLocaleStore.end()) return NULL;
             return &itr->second;
         }
         GossipMenuItemsLocale const* GetGossipMenuItemsLocale(uint32 entry) const
@@ -1337,6 +1353,8 @@ class ObjectMgr
         LinkedRespawnContainer _linkedRespawnStore;
         CreatureLocaleContainer _creatureLocaleStore;
         CreatureFamilyLocaleContainer _creatureFamilyLocaleStore;
+        AreaLocaleContainer _areaLocaleStore;
+        ChatChannelLocaleContainer _chatChannelLocaleStore;
         //GameObjectDataContainer _gameObjectDataStore;
         GameObjectLocaleContainer _gameObjectLocaleStore;
         GameObjectTemplateContainer _gameObjectTemplateStore;
