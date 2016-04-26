@@ -107,6 +107,7 @@ public:
             { "locales_creature",             SEC_ADMINISTRATOR, true,  &HandleReloadLocalesCreatureCommand,            "", NULL },
             { "locales_creature_family",      SEC_ADMINISTRATOR, true,  &HandleReloadLocalesCreatureFamilyCommand,            "", NULL },
             { "locales_area",      SEC_ADMINISTRATOR, true,  &HandleReloadLocalesAreaCommand,            "", NULL },
+            { "locales_chat_channel",      SEC_ADMINISTRATOR, true,  &HandleReloadLocalesChatChannelCommand,            "", NULL },
             { "locales_creature_text",        SEC_ADMINISTRATOR, true,  &HandleReloadLocalesCreatureTextCommand,        "", NULL },
             { "locales_gameobject",           SEC_ADMINISTRATOR, true,  &HandleReloadLocalesGameobjectCommand,          "", NULL },
             { "locales_gossip_menu_option",   SEC_ADMINISTRATOR, true,  &HandleReloadLocalesGossipMenuOptionCommand,    "", NULL },
