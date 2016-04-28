@@ -401,6 +401,10 @@ void WorldSession::SendItemSparseDb2Reply(uint32 entry)
 
     // item name
     std::string name = proto->Name1;
+    int loc_idx = _player->GetSession()->GetSessionDbLocaleIndex();
+    if (loc_idx >= 0)
+        if (ItemLocale const* il = sObjectMgr->GetItemLocale(proto->ItemId))
+            ObjectMgr::GetLocaleString(il->Name, loc_idx, name);
     buff << uint16(name.length());
     if (name.length())
         buff << name;

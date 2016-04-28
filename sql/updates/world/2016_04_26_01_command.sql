@@ -1,0 +1,2 @@
+INSERT INTO command (`name`, `security`, `help`) VALUES ('reload locales_area', 4, 'Syntax: .reload locales_area\nReload locales_area table.');
+INSERT INTO command (`name`, `security`, `help`) VALUES ('reload locales_chat_channel', 4, 'Syntax: .reload locales_chat_channel\nReload locales_chat_channel table.');

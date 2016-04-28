@@ -249,6 +249,10 @@ struct CreatureLocale
     StringVector Name;
     StringVector SubName;
 };
+struct CreatureFamilyLocale
+{
+    StringVector Name;
+};
 
 struct GossipMenuItemsLocale
 {

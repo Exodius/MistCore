@@ -320,6 +320,33 @@ void ObjectMgr::LoadCreatureLocales()
     sLog->outInfo(LOG_FILTER_SERVER_LOADING, ">> Loaded %lu creature locale strings in %u ms", (unsigned long)_creatureLocaleStore.size(), GetMSTimeDiffToNow(oldMSTime));
 }
 
+void ObjectMgr::LoadCreatureFamilyLocales()
+{
+    uint32 oldMSTime = getMSTime();
+    
+    _creatureFamilyLocaleStore.clear();                             // need for reload case
+    
+    QueryResult result = WorldDatabase.Query("SELECT entry, name_loc1, name_loc2, name_loc3, name_loc4, name_loc5, name_loc6, name_loc7, name_loc8, name_loc9, name_loc10 FROM locales_creature_family");
+    
+    if (!result)
+        return;
+    
+    do
+    {
+        Field* fields = result->Fetch();
+        
+        uint32 entry = fields[0].GetUInt32();
+        
+        CreatureFamilyLocale & data = _creatureFamilyLocaleStore[entry];
+        
+        for (uint8 i = 1; i < TOTAL_LOCALES; ++i)
+            AddLocaleString(fields[i].GetString(), LocaleConstant(i), data.Name);
+    }
+    while (result->NextRow());
+    
+    sLog->outInfo(LOG_FILTER_SERVER_LOADING, ">> Loaded %lu CreatureFamily locale strings in %u ms", (unsigned long)_creatureFamilyLocaleStore.size(), GetMSTimeDiffToNow(oldMSTime));
+}
+
 void ObjectMgr::LoadGossipMenuItemsLocales()
 {
     uint32 oldMSTime = getMSTime();
@@ -356,6 +383,60 @@ void ObjectMgr::LoadGossipMenuItemsLocales()
     while (result->NextRow());
 
     sLog->outInfo(LOG_FILTER_SERVER_LOADING, ">> Loaded %lu gossip_menu_option locale strings in %u ms", (unsigned long)_gossipMenuItemsLocaleStore.size(), GetMSTimeDiffToNow(oldMSTime));
+}
+
+void ObjectMgr::LoadAreaLocales()
+{
+    uint32 oldMSTime = getMSTime();
+    
+    _areaLocaleStore.clear();                             // need for reload case
+    
+    QueryResult result = WorldDatabase.Query("SELECT entry, name_loc1, name_loc2, name_loc3, name_loc4, name_loc5, name_loc6, name_loc7, name_loc8, name_loc9, name_loc10 FROM locales_area");
+    
+    if (!result)
+        return;
+    
+    do
+    {
+        Field* fields = result->Fetch();
+        
+        uint32 entry = fields[0].GetUInt32();
+        
+        AreaLocale & data = _areaLocaleStore[entry];
+        
+        for (uint8 i = 1; i < TOTAL_LOCALES; ++i)
+            AddLocaleString(fields[i].GetString(), LocaleConstant(i), data.Name);
+    }
+    while (result->NextRow());
+    
+    sLog->outInfo(LOG_FILTER_SERVER_LOADING, ">> Loaded %lu Area locale strings in %u ms", (unsigned long)_areaLocaleStore.size(), GetMSTimeDiffToNow(oldMSTime));
+}
+
+void ObjectMgr::LoadChatChannelLocales()
+{
+    uint32 oldMSTime = getMSTime();
+    
+    _chatChannelLocaleStore.clear();                             // need for reload case
+    
+    QueryResult result = WorldDatabase.Query("SELECT entry, name_loc1, name_loc2, name_loc3, name_loc4, name_loc5, name_loc6, name_loc7, name_loc8, name_loc9, name_loc10 FROM locales_chat_channel");
+    
+    if (!result)
+        return;
+    
+    do
+    {
+        Field* fields = result->Fetch();
+        
+        uint32 entry = fields[0].GetUInt32();
+        
+        ChatChannelLocale & data = _chatChannelLocaleStore[entry];
+        
+        for (uint8 i = 1; i < TOTAL_LOCALES; ++i)
+            AddLocaleString(fields[i].GetString(), LocaleConstant(i), data.Name);
+    }
+    while (result->NextRow());
+    
+    sLog->outInfo(LOG_FILTER_SERVER_LOADING, ">> Loaded %lu Chat Channel locale strings in %u ms", (unsigned long)_chatChannelLocaleStore.size(), GetMSTimeDiffToNow(oldMSTime));
 }
 
 void ObjectMgr::LoadPointOfInterestLocales()
@@ -5216,8 +5297,8 @@ void ObjectMgr::LoadNpcTextLocales()
             LocaleConstant locale = (LocaleConstant) i;
             for (uint8 j = 0; j < MAX_LOCALES; ++j)
             {
-                AddLocaleString(fields[1 + 8 * 2 * (i - 1) + 2 * j].GetString(), locale, data.Text_0[j]);
-                AddLocaleString(fields[1 + 8 * 2 * (i - 1) + 2 * j + 1].GetString(), locale, data.Text_1[j]);
+                AddLocaleString(fields[1 + MAX_LOCALES * 2 * (i - 1) + 2 * j].GetString(), locale, data.Text_0[j]);
+                AddLocaleString(fields[1 + MAX_LOCALES * 2 * (i - 1) + 2 * j + 1].GetString(), locale, data.Text_1[j]);
             }
         }
     }

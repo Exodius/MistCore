@@ -2,6 +2,7 @@
 #include "ScriptMgr.h"
 #include "InstanceScript.h"
 #include "mechanar.h"
+#include "ScriptedCreature.h"
 
 class gatewatcher_gyro_kill : public CreatureScript
 {
